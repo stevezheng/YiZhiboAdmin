@@ -4,6 +4,7 @@
  */
 var UserModel = require('../../AVModel/UserModel');
 var displayModels = require('../../../Conf/displayModels');
+var utils = require('../../Extend/utils');
 var fields = require('../../../Conf/fields');
 module.exports = Controller("Home/BaseController", function(){
   "use strict";
@@ -163,6 +164,7 @@ module.exports = Controller("Home/BaseController", function(){
             }
           }
 
+          data = utils.format_datetime(data, displayFields);
 
           model.save(data, {
             success: function() {
@@ -198,6 +200,7 @@ module.exports = Controller("Home/BaseController", function(){
               data[r] = relationModelInstance;
             }
           }
+          data = utils.format_datetime(data, displayFields);
 
           for(var key in data){
             model.set(key, data[key]);

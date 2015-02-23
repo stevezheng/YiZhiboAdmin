@@ -6,7 +6,8 @@
   "dependencies": {
     "thinkjs": "*",
     "avoscloud-sdk": "~0.4.6",
-    "moment": "~2.9.0"
+    "moment": "~2.9.0",
+    "underscore": "~1.8.2"
   },
   "keywords": [],
   "repository": {
