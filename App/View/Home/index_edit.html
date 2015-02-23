@@ -1,0 +1,143 @@
+<% include header.html %>
+<!-- BEGIN BODY -->
+<body class="page-header-fixed">
+<% include nav.html %>
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <% include sider.html %>
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <!-- BEGIN PAGE CONTENT-->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- BEGIN SAMPLE TABLE PORTLET-->
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-cogs"></i><%= title %>
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse">
+                                </a>
+                                <a href="#portlet-config" data-toggle="modal" class="config">
+                                </a>
+                                <a href="javascript:;" class="reload">
+                                </a>
+                                <a href="javascript:;" class="remove">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                                <div class="portlet-body form">
+                                    <!-- BEGIN FORM-->
+                                    <form class="form-horizontal form-bordered" action="/index/manage?model=<%= _model %>&type=edit" method="post">
+                                        <% if (result) { %>
+                                        <div class="alert alert-success"><%= result %></div>
+                                        <% } %>
+                                        <div class="form-body">
+                                            <% for (var i = 0; i < displayFields.length; i++) { %>
+                                            <% var displayField = displayFields[i]; %>
+                                            <% if (displayField.show) { %>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3"><%= displayField.display %></label>
+                                                <div class="col-md-9">
+                                                    <% if (displayField.type == 'relation') { %>
+                                                    <select name="<%= displayField.field %>" id="select-<%= displayField.field %>" class="relation-field"></select>
+                                                    <% } else if (displayField.type == 'image') { %>
+                                                    <input type="file" id="file-upload">
+                                                    <input type="hidden" name="<%= displayField.field %>" class="file-upload" value="<%= res.attributes[displayField.field] %>">
+                                                    <a data-ng-href="<%= res.attributes[displayField.field] %>" class="file-upload-image-link">
+                                                        <img data-ng-src="<%= res.attributes[displayField.field] %>" alt="" class="file-upload-image" width="150" height="150"/>
+                                                    </a>
+                                                    <% } else { %>
+                                                    <input type="<%= displayField.type || 'text' %>" class="form-control" name="<%= displayField.field %>" value="<%= res.attributes[displayField.field] %>"/>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                            <% } %>
+                                        </div>
+                                        <div class="form-actions fluid">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-offset-3 col-md-9">
+                                                        <input type="hidden" name="id" value="<%= res.id %>"/>
+                                                        <input type="hidden" name="type" value="edit"/>
+                                                        <input type="hidden" name="model" value="<%= _model %>"/>
+                                                        <button type="submit" class="btn blue" id="btn-submit"><i class="fa fa-check"></i> 确认</button>
+                                                        <a href="/index/manage?model=<%= _model %>&type=list" class="btn default">取消</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- END FORM-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SAMPLE TABLE PORTLET-->
+                </div>
+            </div>
+            <!-- END PAGE CONTENT-->
+        </div>
+    </div>
+    <!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<% include footer.html %>
+<script src="/assets/lib/avos/av.js"></script>
+<script>
+    AV.initialize('<%= config.av_id %>', '<%= config.av_key %>');
+    jQuery(document).ready(function() {
+        // initiate layout and plugins
+        App.init();
+        var getOptions = function(field, name) {
+            $.get('/index/relation?model=' + field, function(res) {
+                var items = res.data;
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if(item.name) {
+                        var option = '<option value="' + item.objectId +'">' + item.name + '</option>';
+                    } else if (item.username) {
+                        var option = '<option value="' + item.objectId +'">' + item.username + '</option>';
+                    }
+                    $('#select-' + name).append(option);
+                }
+            });
+        };
+
+        $('#file-upload').on('change', function() {
+            var fileUploadControl = $("#file-upload")[0];
+            if (fileUploadControl.files.length > 0) {
+                var file = fileUploadControl.files[0];
+                var name = "photo.jpg";
+
+                var avFile = new AV.File(name, file);
+                avFile.save()
+                        .then(function(res) {
+                            $('.file-upload').val(res._url);
+                            $('.file-upload-image-link').attr('href', res._url).show();
+                            $('.file-upload-image').attr('src', res._url);
+                        }, function(error) {
+                        })
+            }
+        });
+
+        $('.relation-field').each(function() {
+            var name = $(this).attr('name');
+            var _name = name.charAt(0).toUpperCase();
+            _name = _name + name.slice(1, name.length);
+            getOptions(_name, name);
+        });
+    });
+</script>
+</body>
+<!-- END BODY -->
+</html>

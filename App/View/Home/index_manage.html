@@ -1,0 +1,109 @@
+<% include header.html %>
+<!-- BEGIN BODY -->
+<body class="page-header-fixed">
+<% include nav.html %>
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <% include sider.html %>
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <!-- BEGIN PAGE CONTENT-->
+            <div class="row">
+                <div class="col-md-12">
+                    <% if (result) { %>
+                    <div class="alert alert-success"><%= result %></div>
+                    <% } %>
+                    <!-- BEGIN SAMPLE TABLE PORTLET-->
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-cogs"></i><%= title %>
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse">
+                                </a>
+                                <a href="javascript:;" class="reload">
+                                </a>
+                                <a href="javascript:;" class="remove">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-border">
+                                    <thead>
+                                    <tr>
+										<% for (var j = 0; j < displayFields.length; j++) { %>
+										<% var displayField = displayFields[j]; %>
+										<th>
+											<%= displayField.display %>
+										</th>
+										<% } %>
+                                        <th>
+                                            操作
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+									<% for (var i = 0; i < res.length; i++) { %>
+									<% var r = res[i]; %>
+									<tr>
+									<% for (var j = 0; j < displayFields.length; j++) { %>
+									<% var displayField = displayFields[j]; %>
+										<td>
+                                        <% if (r.attributes[displayField.field]) { %>
+                                            <% if (displayField.relation) { %>
+                                            <% if (displayField.relation == 'username') { %>
+                                            <%= r.attributes[displayField.field] %>
+                                            <% } else { %>
+                                            <%= r.attributes[displayField.field].attributes[displayField.relation] %>
+                                            <% } %>
+                                            <% } else if(displayField.type == 'image') { %>
+                                            <a href="<%= r.attributes[displayField.field] %>" target="_blank">
+                                                <img src="<%= r.attributes[displayField.field] %>" alt="" width="150" height="150"/>
+                                            </a>
+                                            <% } else { %>
+                                            <%= r.attributes[displayField.field] %>
+                                            <% } %>
+                                        <% } else if (r[displayField.field]) { %>
+                                            <%= r[displayField.field] %>
+                                        <% } %>
+										</td>
+									<% } %>
+                                        <td>
+                                            <a href="/index/manage?model=<%= _model %>&type=edit&id=<%= r.id %>" class="btn blue btn-edit">编辑</a>
+                                            <a href="/index/manage?model=<%= _model %>&type=del&id=<%= r.id %>" class="btn red btn-del">删除</a>
+                                        </td>
+									</tr>
+									<% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END SAMPLE TABLE PORTLET-->
+                </div>
+            </div>
+            <!-- END PAGE CONTENT-->
+        </div>
+    </div>
+    <!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<% include footer.html %>
+<script>
+    jQuery(document).ready(function() {
+        // initiate layout and plugins
+        App.init();
+    });
+</script>
+</body>
+<!-- END BODY -->
+</html>

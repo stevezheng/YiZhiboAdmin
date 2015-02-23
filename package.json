@@ -1,0 +1,20 @@
+{
+  "name": "YiAdmin",
+  "description": "YiAdmin created by thinkjs",
+  "version": "0.1.0",
+  "author": {},
+  "dependencies": {
+    "thinkjs": "*",
+    "avoscloud-sdk": "~0.4.6",
+    "moment": "~2.9.0"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "readmeFilename": "README.md"
+}
